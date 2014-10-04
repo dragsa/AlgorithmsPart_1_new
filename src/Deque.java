@@ -118,8 +118,9 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         public Item next() {
-            //throw a java.util.NoSuchElementException if the client calls the next() method in the iterator 
-//and there are no more items to return.
+            if (firstIterator == null) {
+                throw new NoSuchElementException();
+            }
             Item currentItem = (Item) firstIterator.item;
             firstIterator = firstIterator.next;
             return currentItem;
