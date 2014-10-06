@@ -1,11 +1,11 @@
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import org.junit.After;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import stacks_and_queues.QueueLinkedList;
 
 /*
  * To change this template, choose Tools | Templates
@@ -26,6 +26,7 @@ public class JRandomizedQueueTest {
         rqInstance.enqueue(10);
         rqInstance.enqueue(20);
         rqInstance.enqueue(30);
+        rqInstance.enqueue(40);
     }
 
     //execute for each test, after executing test
@@ -42,7 +43,7 @@ public class JRandomizedQueueTest {
         }
         assertEquals(0, rqInstance.size());
     }
-    
+
     @Test
     public void testDequeuePulse() {
         int k = rqInstance.size();
@@ -50,7 +51,7 @@ public class JRandomizedQueueTest {
             Integer sample = rqInstance.dequeue();
             rqInstance.enqueue(sample);
         }
-        assertEquals(3, rqInstance.size());
+        assertEquals(4, rqInstance.size());
     }
 
     @Test
@@ -63,6 +64,15 @@ public class JRandomizedQueueTest {
     }
 
     @Test
+    public void testIsEmpty() {
+        int k = rqInstance.size();
+        for (int i = 0; i < k; i++) {
+            rqInstance.dequeue();
+        }
+        assertEquals(true, rqInstance.isEmpty());
+    }
+
+    @Test
     public void testSample() {
         for (int i = 0; i < 3; i++) {
             System.out.println("new cycle");
@@ -70,20 +80,38 @@ public class JRandomizedQueueTest {
             for (int j = 0; j < k; j++) {
                 System.out.println(rqInstance.sample());
             }
-            assertEquals(3, rqInstance.size());
+            assertEquals(4, rqInstance.size());
         }
     }
 
-    @Ignore
-    @Test
-    public void simpleIteration() {
+    @Test(expected = NoSuchElementException.class)
+    public void testItaretorNext() {
+        Iterator<Integer> iter = rqInstance.iterator();
+        while (iter.hasNext()) {
+            System.out.println("inside iterator");
+            iter.next();
+        }
+        iter.next();
     }
 
-    @Ignore
+    @Test
+    public void complexIterationDummy() {
+        Integer[] outerArray = new Integer[]{10, 20, 30, 40};
+        Integer[] innerArray = new Integer[]{10, 20, 30, 40};
+        assertArrayEquals(outerArray, innerArray);
+    }
+
     @Test
     public void complexIteration() {
+        Iterator<Integer> iterOne = rqInstance.iterator();
+        Iterator<Integer> iterTwo = rqInstance.iterator();
+        while (iterOne.hasNext()) {
+            System.out.println("inside iterator");
+            iterOne.next();
+        }
+        assertTrue(iterTwo.hasNext());
     }
-
+    
     @Test(expected = NullPointerException.class)
     public void enqueueNull() {
         rqInstance.enqueue(null);

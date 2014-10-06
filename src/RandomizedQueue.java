@@ -62,7 +62,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             array[index] = array[tail - 1];
         }
         array[--tail] = null;
-        if (size() == array.length / 4) {
+        if (size() == array.length / 4 && array.length != 1) {
             resize(array.length / 2);
         }
         return item;
@@ -113,7 +113,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         public Item next() {
-            if (iteratorArrayCopy[iteratorHead] == null) {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
             return iteratorArrayCopy[iteratorHead++];
