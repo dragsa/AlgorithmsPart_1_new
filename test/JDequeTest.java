@@ -112,4 +112,18 @@ public class JDequeTest {
             index++;
         }
     }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void interationExceptionRemove() {
+        dequeuInstance.iterator().remove();
+    }
+    
+    @Test(expected = NoSuchElementException.class)
+    public void interationExceptionEmpty() {
+        int k = dequeuInstance.size();
+        for (int i = 0; i < k; i++) {
+            dequeuInstance.removeFirst();
+        }
+        dequeuInstance.iterator().next();
+    }
 }
