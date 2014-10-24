@@ -21,39 +21,51 @@ public class Fast {
         String filename = args[0];
         In in = new In(filename);
         int N = in.readInt();
-        Point[] point = new Point[N];
+        Point[] points = new Point[N];
+        double[] slopes = new double[N];
         StdDraw.setPenRadius(0.01);
-        for (int i = 0; i < point.length; i++) {
-            point[i] = new Point(in.readInt(), in.readInt());
-            point[i].draw();
+        for (int i = 0; i < points.length; i++) {
+            points[i] = new Point(in.readInt(), in.readInt());
+            points[i].draw();
         }
 
         StdDraw.show(0);
         StdDraw.setPenRadius(0.005);
 
-        for (int i = 0; i < point.length; i++) {
-            Arrays.sort(point, point[i].SLOPE_ORDER);
-            Point[] pointList = new Point[2];
-            pointList[0] = point[0];
-            pointList[1] = point[1];
-            int segmentCounter = 1;
-            for (int j = 1; j < point.length; j++) {
-                if (j != point.length - 1) {
-                    if (point[0].slopeTo(point[j]) == point[0].slopeTo(point[j + 1])) {
-                        pointList = Arrays.copyOf(pointList, pointList.length + 1);
-                        pointList[pointList.length - 1] = point[j + 1];
+        for (int i = 0; i < points.length; i++) {
+            Arrays.sort(points, points[i].SLOPE_ORDER);
+            for (int z = 0; z < points.length; z++) {
+                slopes[z] = points[0].slopeTo(points[z]);
+            }
+            Point[] pointCollinearArray = new Point[2];
+            pointCollinearArray[0] = points[0];
+            int segmentCounter = 0;
+            for (int j = 1; j < points.length; j++) {
+                if (j == 1) {
+                    pointCollinearArray[1] = points[1];
+                    segmentCounter++;
+                } else if (segmentCounter == 0) {
+                    pointCollinearArray = new Point[2];
+                    pointCollinearArray[0] = points[0];
+                    pointCollinearArray[1] = points[j];
+                    segmentCounter++;
+                }
+                if (j < points.length - 1) {
+                    if (points[0].slopeTo(points[j]) == points[0].slopeTo(points[j + 1])) {
+                        pointCollinearArray = Arrays.copyOf(pointCollinearArray, pointCollinearArray.length + 1);
+                        pointCollinearArray[pointCollinearArray.length - 1] = points[j + 1];
                         segmentCounter++;
                     } else if (segmentCounter >= 3) {
-                        Arrays.sort(pointList);
-                        point[0].drawTo(pointList[pointList.length - 1]);
-                        segmentCounter = 1;
-                        StdDraw.show(0);
+                        Arrays.sort(pointCollinearArray);
+                        pointCollinearArray[0].drawTo(pointCollinearArray[pointCollinearArray.length - 1]);
+                        segmentCounter = 0;
+                    } else {
+                        segmentCounter = 0;
                     }
                 } else if (segmentCounter >= 3) {
-                    Arrays.sort(pointList);
-                    point[0].drawTo(pointList[pointList.length - 1]);
-                    segmentCounter = 1;
-                    StdDraw.show(0);
+                    Arrays.sort(pointCollinearArray);
+                    pointCollinearArray[0].drawTo(pointCollinearArray[pointCollinearArray.length - 1]);
+                    segmentCounter = 0;
                 }
             }
         }
