@@ -13,16 +13,15 @@ import java.util.Arrays;
 public class Fast {
 
     public static void main(String[] args) {
+         Stopwatch sw = new Stopwatch();
 
         StdDraw.setXscale(0, 32768);
         StdDraw.setYscale(0, 32768);
-        StdDraw.show(0);
 
         String filename = args[0];
         In in = new In(filename);
-        int N = in.readInt();
-        Point[] points = new Point[N];
-//        double[] slopes = new double[N];
+        int n = in.readInt();
+        Point[] points = new Point[n];
         ArrayList<String> segments = new ArrayList<String>();
         StdDraw.setPenRadius(0.01);
         for (int i = 0; i < points.length; i++) {
@@ -30,31 +29,29 @@ public class Fast {
             points[i].draw();
         }
 
-        StdDraw.show(0);
         StdDraw.setPenRadius(0.005);
 
         for (int i = 0; i < points.length; i++) {
-            Arrays.sort(points, points[i].SLOPE_ORDER);
-//            for (int z = 0; z < points.length; z++) {
-//                slopes[z] = points[0].slopeTo(points[z]);
-//            }
+//            Point[] pointsCopy = Arrays.copyOf(points, points.length);
+            Point[] pointsCopy = points.clone();
+            Arrays.sort(pointsCopy, pointsCopy[i].SLOPE_ORDER);
             Point[] pointCollinearArray = new Point[2];
-            pointCollinearArray[0] = points[0];
+            pointCollinearArray[0] = pointsCopy[0];
             int segmentCounter = 0;
-            for (int j = 1; j < points.length; j++) {
+            for (int j = 1; j < pointsCopy.length; j++) {
                 if (j == 1) {
-                    pointCollinearArray[1] = points[1];
+                    pointCollinearArray[1] = pointsCopy[1];
                     segmentCounter++;
                 } else if (segmentCounter == 0) {
                     pointCollinearArray = new Point[2];
-                    pointCollinearArray[0] = points[0];
-                    pointCollinearArray[1] = points[j];
+                    pointCollinearArray[0] = pointsCopy[0];
+                    pointCollinearArray[1] = pointsCopy[j];
                     segmentCounter++;
                 }
-                if (j < points.length - 1) {
-                    if (points[0].slopeTo(points[j]) == points[0].slopeTo(points[j + 1])) {
+                if (j < pointsCopy.length - 1) {
+                    if (pointsCopy[0].slopeTo(pointsCopy[j]) == pointsCopy[0].slopeTo(pointsCopy[j + 1])) {
                         pointCollinearArray = Arrays.copyOf(pointCollinearArray, pointCollinearArray.length + 1);
-                        pointCollinearArray[pointCollinearArray.length - 1] = points[j + 1];
+                        pointCollinearArray[pointCollinearArray.length - 1] = pointsCopy[j + 1];
                         segmentCounter++;
                     } else if (segmentCounter >= 3) {
                         Arrays.sort(pointCollinearArray);
@@ -95,5 +92,6 @@ public class Fast {
             }
         }
         StdDraw.show(0);
+        System.out.println("it took " + sw.elapsedTime() + " secs for fast algorithm");
     }
 }
