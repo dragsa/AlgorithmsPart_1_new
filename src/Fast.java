@@ -51,7 +51,7 @@ public class Fast {
 //                    pointsCollinearArray[1] = pointsCopy[j];
                     pointsCollinearArrayList = new ArrayList<Point>();
                     pointsCollinearArrayList.add(pointsCopy[0]);
-                    pointsCollinearArrayList.add(pointsCopy[1]);
+                    pointsCollinearArrayList.add(pointsCopy[j]);
                     segmentCounter++;
                 }
                 if (j < pointsCopy.length - 1) {
