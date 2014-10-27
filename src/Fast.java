@@ -35,25 +35,33 @@ public class Fast {
 //            Point[] pointsCopy = Arrays.copyOf(points, points.length);
             Point[] pointsCopy = points.clone();
             Arrays.sort(pointsCopy, pointsCopy[i].SLOPE_ORDER);
-            Point[] pointsCollinearArray = new Point[2];
-            pointsCollinearArray[0] = pointsCopy[0];
+//            Point[] pointsCollinearArray = new Point[2];
+//            pointsCollinearArray[0] = pointsCopy[0];
+            ArrayList<Point> pointsCollinearArrayList = new ArrayList<Point>();
+            pointsCollinearArrayList.add(pointsCopy[0]);
             int segmentCounter = 0;
             for (int j = 1; j < pointsCopy.length; j++) {
                 if (j == 1) {
-                    pointsCollinearArray[1] = pointsCopy[1];
+//                    pointsCollinearArray[1] = pointsCopy[1];
+                    pointsCollinearArrayList.add(pointsCopy[1]);
                     segmentCounter++;
                 } else if (segmentCounter == 0) {
-                    pointsCollinearArray = new Point[2];
-                    pointsCollinearArray[0] = pointsCopy[0];
-                    pointsCollinearArray[1] = pointsCopy[j];
+//                    pointsCollinearArray = new Point[2];
+//                    pointsCollinearArray[0] = pointsCopy[0];
+//                    pointsCollinearArray[1] = pointsCopy[j];
+                    pointsCollinearArrayList = new ArrayList<Point>();
+                    pointsCollinearArrayList.add(pointsCopy[0]);
+                    pointsCollinearArrayList.add(pointsCopy[1]);
                     segmentCounter++;
                 }
                 if (j < pointsCopy.length - 1) {
                     if (pointsCopy[0].slopeTo(pointsCopy[j]) == pointsCopy[0].slopeTo(pointsCopy[j + 1])) {
-                        pointsCollinearArray = Arrays.copyOf(pointsCollinearArray, pointsCollinearArray.length + 1);
-                        pointsCollinearArray[pointsCollinearArray.length - 1] = pointsCopy[j + 1];
+//                        pointsCollinearArray = Arrays.copyOf(pointsCollinearArray, pointsCollinearArray.length + 1);
+//                        pointsCollinearArray[pointsCollinearArray.length - 1] = pointsCopy[j + 1];
+                        pointsCollinearArrayList.add(pointsCopy[j + 1]);
                         segmentCounter++;
                     } else if (segmentCounter >= 3) {
+                        Point[] pointsCollinearArray = pointsCollinearArrayList.toArray(new Point[pointsCollinearArrayList.size()]);
                         Arrays.sort(pointsCollinearArray);
                         StringBuilder builder = new StringBuilder();
                         for (int k = 0; k < pointsCollinearArray.length; k++) {
@@ -73,6 +81,7 @@ public class Fast {
                         segmentCounter = 0;
                     }
                 } else if (segmentCounter >= 3) {
+                    Point[] pointsCollinearArray = pointsCollinearArrayList.toArray(new Point[pointsCollinearArrayList.size()]);
                     Arrays.sort(pointsCollinearArray);
                     StringBuilder builder = new StringBuilder();
                     for (int k = 0; k < pointsCollinearArray.length; k++) {
