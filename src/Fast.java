@@ -45,10 +45,8 @@ public class Fast {
                 int maxSegmentCounter = 1;
                 int jInner = j;
                 while ((jInner < pointsCopy.length - 1) && (slopes[jInner] == slopes[jInner + 1])) {
-                    {
-                        segmentCounter++;
-                        jInner++;
-                    }
+                    segmentCounter++;
+                    jInner++;
                     if (segmentCounter >= 3 && maxSegmentCounter < segmentCounter) {
                         maxSegmentCounter = segmentCounter;
                     }
@@ -56,8 +54,8 @@ public class Fast {
                 if (maxSegmentCounter >= 3) {
                     pointsCollinearArrayList = new ArrayList<Point>();
                     pointsCollinearArrayList.add(pointsCopy[0]);
-                    for (int k = 1; k < maxSegmentCounter + 1; k++) {
-                        pointsCollinearArrayList.add(pointsCopy[(jInner + 1) - k]);
+                    for (int k = 0; k < maxSegmentCounter; k++) {
+                        pointsCollinearArrayList.add(pointsCopy[jInner - k]);
                     }
                 }
                 if (pointsCollinearArrayList != null) {
