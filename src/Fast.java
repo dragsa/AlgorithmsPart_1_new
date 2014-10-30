@@ -136,7 +136,7 @@ public class Fast {
             for (int x = 0; x < pointsCopy.length; x++) {
                 slopes[x] = pointsCopy[x].slopeTo(pointsCopy[0]);
             }
-            ArrayList<Point> pointsCollinearArrayList = null;
+//            ArrayList<Point> pointsCollinearArrayList = null;
             Point[] pointsCollinearArray = null;
 
             for (int j = 1; j < pointsCopy.length; j++) {

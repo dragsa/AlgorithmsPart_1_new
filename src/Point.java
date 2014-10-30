@@ -50,7 +50,7 @@ public class Point implements Comparable<Point> {
         if (that == null) {
             throw new NullPointerException();
         }
-        if (this.compareTo(that) == 0) {
+        if ((this.x == that.x) && (this.y == that.y)) {
             return Double.NEGATIVE_INFINITY;
         }
         if (this.x == that.x) {
