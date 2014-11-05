@@ -13,11 +13,29 @@ public class Board {
 
     private int[][] tiles;
     private int N;
+    private int[] emptyBlock = new int[2];
+    private int hammingIndex;
+    private int manhattanIndex;
 
     public Board(int[][] blocks) {
         tiles = new int[blocks.length][blocks.length];
         for (int i = 0; i < blocks.length; i++) {
             tiles[i] = Arrays.copyOf(blocks[i], blocks.length);
+            for (int j = 0; j < tiles[i].length; j++) {
+                if (tiles[i][j] == 0) {
+                    emptyBlock[0] = i;
+                    emptyBlock[1] = j;
+                } else {
+                    int flatCoordinate = flatter(i, j);
+                    if (tiles[i][j] != flatCoordinate) {
+//                    System.out.println(tiles[i][j]);
+                        hammingIndex++;
+                        int iProper = deFlatter(tiles[i][j])[0];
+                        int jProper = deFlatter(tiles[i][j])[1];
+                        manhattanIndex += Math.abs(i - iProper) + Math.abs(j - jProper);
+                    }
+                }
+            }
         }
 //        tiles = blocks.clone();
         N = tiles.length * tiles.length;
@@ -26,8 +44,24 @@ public class Board {
     // (where blocks[i][j] = block in row i, column j)
 
     private int flatter(final int i, final int j) {
-        int flatCoordinate = (i + j * tiles.length);
+        int flatCoordinate = i * tiles.length + (j + 1);
         return flatCoordinate;
+    }
+
+    private int[] deFlatter(final int k) {
+        int i = 0;
+        int j = 0;
+        if (k == 0) {
+            return emptyBlock;
+        }
+        if (k > tiles.length) {
+            j = (k - 1) % tiles.length;
+            i = (k - j) / tiles.length;
+        } else {
+            j = k - 1;
+            i = 0;
+        }
+        return new int[]{i, j};
     }
 
     public int dimension() {
@@ -36,12 +70,12 @@ public class Board {
     // board dimension N
 
     public int hamming() {
-        return 0;
+        return hammingIndex;
     }
     // number of blocks out of place
 
     public int manhattan() {
-        return 0;
+        return manhattanIndex;
     }
     // sum of Manhattan distances between blocks and goal
 
@@ -74,19 +108,28 @@ public class Board {
             }
             s.append("\n");
         }
-        //       flat structure print
         return s.toString();
     }
-    
-    public void flaterResult() {
+    // string representation of this board (in the output format specified below)
+
+    public void flatterResult() {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles.length; j++) {
-                System.out.print(flatter(j, i) + " ");
+                System.out.printf("%2d ", flatter(i, j));
             }
             System.out.println("");
         }
     }
-    // string representation of this board (in the output format specified below)
+//       flat structure print
+
+    public void deFlatterResult() {
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = tiles.length - 1; j < tiles.length; j++) {
+                System.out.println("chords: " + i + " " + j);
+                System.out.println(deFlatter(tiles[i][j])[0] + " " + deFlatter(tiles[i][j])[1]);
+            }
+        }
+    }
 
     public static void main(String[] args) {
     }

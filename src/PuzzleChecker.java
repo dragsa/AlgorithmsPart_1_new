@@ -45,7 +45,10 @@ public class PuzzleChecker {
             // solve the slider puzzle
             Board initial = new Board(tiles);
             System.out.println(initial);
-            initial.flaterResult();
+            initial.flatterResult();
+            initial.deFlatterResult();
+            System.out.println(initial.hamming());
+            System.out.println(initial.manhattan());
 // immutability test
 //            tiles[0][0] = 142;
 //            System.out.println(initial);
