@@ -26,19 +26,20 @@ public class Board {
                     emptyBlock[0] = i;
                     emptyBlock[1] = j;
                 } else {
-                    int flatCoordinate = flatter(i, j);
-                    if (tiles[i][j] != flatCoordinate) {
+                    int chord = tiles[i][j];
+                    if (chord != flatter(i, j)) {
 //                    System.out.println(tiles[i][j]);
                         hammingIndex++;
-                        int iProper = deFlatter(tiles[i][j])[0];
-                        int jProper = deFlatter(tiles[i][j])[1];
+                        int[] properChords = deFlatter(chord);
+                        int iProper = properChords[0];
+                        int jProper = properChords[1];
                         manhattanIndex += Math.abs(i - iProper) + Math.abs(j - jProper);
                     }
                 }
             }
         }
 //        tiles = blocks.clone();
-        N = tiles.length * tiles.length;
+        N = tiles.length;
     }
     // construct a board from an N-by-N array of blocks
     // (where blocks[i][j] = block in row i, column j)
@@ -126,7 +127,7 @@ public class Board {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = tiles.length - 1; j < tiles.length; j++) {
                 System.out.println("chords: " + i + " " + j);
-                System.out.println(deFlatter(tiles[i][j])[0] + " " + deFlatter(tiles[i][j])[1]);
+                System.out.println("proper chords: " + deFlatter(tiles[i][j])[0] + " " + deFlatter(tiles[i][j])[1]);
             }
         }
     }
