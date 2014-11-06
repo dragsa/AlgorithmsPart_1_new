@@ -1,5 +1,7 @@
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /*
  * To change this template, choose Tools | Templates
@@ -82,37 +84,57 @@ public class Board {
     // sum of Manhattan distances between blocks and goal
 
     public boolean isGoal() {
-        return false;
+        return ((tiles[N - 1][N - 1] == 0) && manhattanIndex == 0);
     }
     // is this board the goal board?
 
     public Board twin() {
-        return null;
+        int[][] tilesTwin = new int[tiles.length][tiles.length];
+        for (int i = 0; i < tiles.length; i++) {
+            tilesTwin[i] = Arrays.copyOf(tiles[i], tiles.length);
+        }
+        int indexA = StdRandom.uniform(0, tilesTwin.length - 1);
+        int indexB = indexA + 1;
+        int valueAtIndexA = tilesTwin[0][indexA];
+        int valueAtIndexB = tilesTwin[0][indexB];
+        tilesTwin[0][indexA] = valueAtIndexB;
+        tilesTwin[0][indexB] = valueAtIndexA;
+        return new Board(tilesTwin);
     }
     // a board that is obtained by exchanging two adjacent blocks in the same row
 
     public boolean equals(Object y) {
-        return false;
+        if (y == this) {
+            return true;
+        }
+        if (y == null) {
+            return false;
+        }
+        if (y.getClass() != this.getClass()) {
+            return false;
+        }
+        Board that = (Board) y;
+        return Arrays.equals(this.tiles, that.tiles);
     }
     // does this board equal y?
 
     public Iterable<Board> neighbors() {
         if (neighborsList == null) {
-            int[] deltaX = new int[]{-1, 0, 1};
-            int[] deltaY = new int[]{-1, 0, 1};
-            for (int currentDeltaY : deltaY) {
-                for (int currentDeltaX : deltaX) {
-                    if (Math.abs(currentDeltaX) != Math.abs(currentDeltaY)) {
-                        if (0 <= emptyBlock[0] + currentDeltaY && N > emptyBlock[0] + currentDeltaY
-                                && 0 <= emptyBlock[1] + currentDeltaX && N > emptyBlock[1] + currentDeltaX) {
-                            int[] newEmptyBlock = new int[]{emptyBlock[0] + currentDeltaY, emptyBlock[1] + currentDeltaX};
-                            int[] newNeighborBlock = new int[]{emptyBlock[0], emptyBlock[1]};
-                            System.out.println("move:");
-                            System.out.println("new empty chords: " + newEmptyBlock[0] + " "+ newEmptyBlock[1]);
-                            System.out.println("block to move: " + tiles[newEmptyBlock[0]][newEmptyBlock[1]]);
-                            System.out.println("new neighbor chords: " + newNeighborBlock[0] + " " + newNeighborBlock[1]);
-                        }
+            neighborsList = new Queue<Board>();
+            List<int[]> blocksToMoveList = neighborsHelper();
+//            for (int[] member : blocksToMoveList) {
+//                System.out.println(Arrays.toString(member));
+//            }
+            if (blocksToMoveList.size() > 0) {
+                for (int[] member : blocksToMoveList) {
+                    int[][] tilesClone = new int[tiles.length][tiles.length];
+                    for (int i = 0; i < tiles.length; i++) {
+                        tilesClone[i] = Arrays.copyOf(tiles[i], tiles.length);
                     }
+                    tilesClone[emptyBlock[0]][emptyBlock[1]] = tilesClone[member[0]][member[1]];
+                    tilesClone[member[0]][member[1]] = 0;
+                    Board tempBoard = new Board(tilesClone);
+                    neighborsList.enqueue(tempBoard);
                 }
             }
             return neighborsList;
@@ -121,6 +143,30 @@ public class Board {
         }
     }
     // all neighboring boards
+
+    private List<int[]> neighborsHelper() {
+        List<int[]> blocksToMoveList = new ArrayList<int[]>();
+        int[] deltaX = new int[]{-1, 0, 1};
+        int[] deltaY = new int[]{-1, 0, 1};
+        for (int currentDeltaY : deltaY) {
+            for (int currentDeltaX : deltaX) {
+                if (Math.abs(currentDeltaX) != Math.abs(currentDeltaY)) {
+                    if (0 <= emptyBlock[0] + currentDeltaY && N > emptyBlock[0] + currentDeltaY
+                            && 0 <= emptyBlock[1] + currentDeltaX && N > emptyBlock[1] + currentDeltaX) {
+                        int[] blockToMove = new int[]{emptyBlock[0] + currentDeltaY, emptyBlock[1] + currentDeltaX};
+//                        int[] newEmptyBlock = new int[]{emptyBlock[0] + currentDeltaY, emptyBlock[1] + currentDeltaX};
+//                        int[] newNeighborBlock = new int[]{emptyBlock[0], emptyBlock[1]};
+//                        System.out.println("move:");
+//                        System.out.println("new empty chords: " + newEmptyBlock[0] + " " + newEmptyBlock[1]);
+//                        System.out.println("block to move: " + tiles[newEmptyBlock[0]][newEmptyBlock[1]]);
+//                        System.out.println("new neighbor chords: " + newNeighborBlock[0] + " " + newNeighborBlock[1]);
+                        blocksToMoveList.add(blockToMove);
+                    }
+                }
+            }
+        }
+        return blocksToMoveList;
+    }
 
     public String toString() {
         StringBuilder s = new StringBuilder();
@@ -135,7 +181,7 @@ public class Board {
     }
     // string representation of this board (in the output format specified below)
 
-    public void flatterResult() {
+    private void flatterResult() {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles.length; j++) {
                 System.out.printf("%2d ", flatter(i, j));
@@ -144,7 +190,7 @@ public class Board {
         }
     }
 
-    public void deFlatterResult() {
+    private void deFlatterResult() {
         for (int i = 7; i < tiles.length; i++) {
             for (int j = 0; j < tiles.length; j++) {
                 System.out.println("chords: " + i + " " + j);
@@ -154,6 +200,36 @@ public class Board {
     }
 
     public static void main(String[] args) {
+// for each command-line argument
+        for (String filename : args) {
+
+// read in the board specified in the filename
+            In in = new In(filename);
+            int N = in.readInt();
+            int[][] tiles = new int[N][N];
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    tiles[i][j] = in.readInt();
+                }
+            }
+
+            Board initial = new Board(tiles);
+            System.out.println(initial);
+// neighbors test
+//            Iterable<Board> neib = initial.neighbors();
+//            for (Board memberBoard : neib) {
+//                System.out.println(memberBoard);
+//            }
+
+// flatters and functon indexes test
+//            initial.flatterResult();
+//            initial.deFlatterResult();
+//            System.out.println(initial.hamming());
+//            System.out.println(initial.manhattan());
+
+//// immutability test
+//            tiles[0][0] = 142;
+//            System.out.println(initial);
+        }
     }
-    // unit tests (not graded)
 }
