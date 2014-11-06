@@ -16,6 +16,7 @@ public class Board {
     private int[] emptyBlock = new int[2];
     private int hammingIndex;
     private int manhattanIndex;
+    private Queue<Board> neighborsList;
 
     public Board(int[][] blocks) {
         tiles = new int[blocks.length][blocks.length];
@@ -96,7 +97,24 @@ public class Board {
     // does this board equal y?
 
     public Iterable<Board> neighbors() {
-        return null;
+        if (neighborsList == null) {
+            int[] deltaX = new int[]{-1, 0, 1};
+            int[] deltaY = new int[]{-1, 0, 1};
+            for (int currentDeltaY : deltaY) {
+                for (int currentDeltaX : deltaX) {
+                    if (!(currentDeltaX == 0 && currentDeltaY == 0)) {
+                        if (0 <= emptyBlock[0] + currentDeltaY && N > emptyBlock[0] + currentDeltaY
+                                && 0 <= emptyBlock[1] + currentDeltaX && N > emptyBlock[1] + currentDeltaX) {
+                            int[] newEmptyBlock = new int[]{emptyBlock[0] + currentDeltaY, emptyBlock[1] + currentDeltaX};
+                            int[] newNeighborBlock = new int[]{emptyBlock[0], emptyBlock[1]};
+                        }
+                    }
+                }
+            }
+            return neighborsList;
+        } else {
+            return neighborsList;
+        }
     }
     // all neighboring boards
 
@@ -121,11 +139,10 @@ public class Board {
             System.out.println("");
         }
     }
-//       flat structure print
 
     public void deFlatterResult() {
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = tiles.length - 1; j < tiles.length; j++) {
+        for (int i = 7; i < tiles.length; i++) {
+            for (int j = 0; j < tiles.length; j++) {
                 System.out.println("chords: " + i + " " + j);
                 System.out.println("proper chords: " + deFlatter(tiles[i][j])[0] + " " + deFlatter(tiles[i][j])[1]);
             }
