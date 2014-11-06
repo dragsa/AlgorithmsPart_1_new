@@ -102,11 +102,15 @@ public class Board {
             int[] deltaY = new int[]{-1, 0, 1};
             for (int currentDeltaY : deltaY) {
                 for (int currentDeltaX : deltaX) {
-                    if (!(currentDeltaX == 0 && currentDeltaY == 0)) {
+                    if (Math.abs(currentDeltaX) != Math.abs(currentDeltaY)) {
                         if (0 <= emptyBlock[0] + currentDeltaY && N > emptyBlock[0] + currentDeltaY
                                 && 0 <= emptyBlock[1] + currentDeltaX && N > emptyBlock[1] + currentDeltaX) {
                             int[] newEmptyBlock = new int[]{emptyBlock[0] + currentDeltaY, emptyBlock[1] + currentDeltaX};
                             int[] newNeighborBlock = new int[]{emptyBlock[0], emptyBlock[1]};
+                            System.out.println("move:");
+                            System.out.println("new empty chords: " + newEmptyBlock[0] + " "+ newEmptyBlock[1]);
+                            System.out.println("block to move: " + tiles[newEmptyBlock[0]][newEmptyBlock[1]]);
+                            System.out.println("new neighbor chords: " + newNeighborBlock[0] + " " + newNeighborBlock[1]);
                         }
                     }
                 }
