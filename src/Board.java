@@ -19,6 +19,7 @@ public class Board {
     private int hammingIndex;
     private int manhattanIndex;
     private Queue<Board> neighborsList;
+    private Board twin;
 
     public Board(int[][] blocks) {
         tiles = new int[blocks.length][blocks.length];
@@ -89,17 +90,27 @@ public class Board {
     // is this board the goal board?
 
     public Board twin() {
-        int[][] tilesTwin = new int[tiles.length][tiles.length];
-        for (int i = 0; i < tiles.length; i++) {
-            tilesTwin[i] = Arrays.copyOf(tiles[i], tiles.length);
+        if (twin == null) {
+            int[][] tilesTwin = new int[tiles.length][tiles.length];
+            for (int i = 0; i < tiles.length; i++) {
+                tilesTwin[i] = Arrays.copyOf(tiles[i], tiles.length);
+            }
+            int indexI;
+            if (emptyBlock[0] == 0) {
+                indexI = 1;
+            } else {
+                indexI = StdRandom.uniform(0, emptyBlock[0]);
+            }
+            int indexJ = StdRandom.uniform(0, tilesTwin.length - 1);
+            int valueAtIndexA = tilesTwin[indexI][indexJ];
+            int valueAtIndexB = tilesTwin[indexI][indexJ + 1];
+            tilesTwin[indexI][indexJ] = valueAtIndexB;
+            tilesTwin[indexI][indexJ + 1] = valueAtIndexA;
+            twin = new Board(tilesTwin);
+            return twin;
+        } else {
+            return twin;
         }
-        int indexA = StdRandom.uniform(0, tilesTwin.length - 1);
-        int indexB = indexA + 1;
-        int valueAtIndexA = tilesTwin[0][indexA];
-        int valueAtIndexB = tilesTwin[0][indexB];
-        tilesTwin[0][indexA] = valueAtIndexB;
-        tilesTwin[0][indexB] = valueAtIndexA;
-        return new Board(tilesTwin);
     }
     // a board that is obtained by exchanging two adjacent blocks in the same row
 
@@ -114,7 +125,15 @@ public class Board {
             return false;
         }
         Board that = (Board) y;
-        return Arrays.equals(this.tiles, that.tiles);
+        if (this.dimension() != that.dimension()) {
+            return false;
+        }
+        for (int i = 0; i < N; i++) {
+            if (!Arrays.equals(this.tiles[i], that.tiles[i])) {
+                return false;
+            }
+        }
+        return true;
     }
     // does this board equal y?
 
