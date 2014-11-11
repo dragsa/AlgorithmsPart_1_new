@@ -13,22 +13,24 @@ import java.util.List;
  */
 public class Board {
 
-    private int[][] tiles;
+    private char[][] tiles;
     private int N;
-    private int[] emptyBlock = new int[2];
+    private int emptyBlockX;
+    private int emptyBlockY;
     private int hammingIndex;
     private int manhattanIndex;
     private Queue<Board> neighborsList;
     private Board twin;
 
     public Board(int[][] blocks) {
-        tiles = new int[blocks.length][blocks.length];
+        tiles = new char[blocks.length][blocks.length];
         for (int i = 0; i < blocks.length; i++) {
-            tiles[i] = Arrays.copyOf(blocks[i], blocks.length);
+//            tiles[i] = Arrays.copyOf(blocks[i], blocks.length);
             for (int j = 0; j < tiles[i].length; j++) {
+                tiles[i][j] = (char) (blocks[i][j]);
                 if (tiles[i][j] == 0) {
-                    emptyBlock[0] = i;
-                    emptyBlock[1] = j;
+                    emptyBlockY = i;
+                    emptyBlockX = j;
                 } else {
                     int chord = tiles[i][j];
                     if (chord != flatter(i, j)) {
@@ -57,7 +59,7 @@ public class Board {
         int i = 0;
         int j = 0;
         if (k == 0) {
-            return emptyBlock;
+            return new int[]{emptyBlockX, emptyBlockY};
         }
         if (k > tiles.length) {
             j = (k - 1) % tiles.length;
@@ -93,13 +95,16 @@ public class Board {
         if (twin == null) {
             int[][] tilesTwin = new int[tiles.length][tiles.length];
             for (int i = 0; i < tiles.length; i++) {
-                tilesTwin[i] = Arrays.copyOf(tiles[i], tiles.length);
+//                tilesTwin[i] = Arrays.copyOf(tiles[i], tiles.length);
+                for (int j = 0; j < tiles[i].length; j++) {
+                    tilesTwin[i][j] = (int) tiles[i][j];
+                }
             }
             int indexI;
-            if (emptyBlock[0] == 0) {
+            if (emptyBlockY == 0) {
                 indexI = 1;
             } else {
-                indexI = StdRandom.uniform(0, emptyBlock[0]);
+                indexI = StdRandom.uniform(0, emptyBlockY);
             }
             int indexJ = StdRandom.uniform(0, tilesTwin.length - 1);
             int valueAtIndexA = tilesTwin[indexI][indexJ];
@@ -148,9 +153,12 @@ public class Board {
                 for (int[] member : blocksToMoveList) {
                     int[][] tilesClone = new int[tiles.length][tiles.length];
                     for (int i = 0; i < tiles.length; i++) {
-                        tilesClone[i] = Arrays.copyOf(tiles[i], tiles.length);
+//                        tilesClone[i] = Arrays.copyOf(tiles[i], tiles.length);
+                        for (int j = 0; j < tiles.length; j++) {
+                            tilesClone[i][j] = (int) tiles[i][j];
+                        }
                     }
-                    tilesClone[emptyBlock[0]][emptyBlock[1]] = tilesClone[member[0]][member[1]];
+                    tilesClone[emptyBlockY][emptyBlockX] = tilesClone[member[0]][member[1]];
                     tilesClone[member[0]][member[1]] = 0;
                     Board tempBoard = new Board(tilesClone);
                     neighborsList.enqueue(tempBoard);
@@ -170,9 +178,9 @@ public class Board {
         for (int currentDeltaY : deltaY) {
             for (int currentDeltaX : deltaX) {
                 if (Math.abs(currentDeltaX) != Math.abs(currentDeltaY)) {
-                    if (0 <= emptyBlock[0] + currentDeltaY && N > emptyBlock[0] + currentDeltaY
-                            && 0 <= emptyBlock[1] + currentDeltaX && N > emptyBlock[1] + currentDeltaX) {
-                        int[] blockToMove = new int[]{emptyBlock[0] + currentDeltaY, emptyBlock[1] + currentDeltaX};
+                    if (0 <= emptyBlockY + currentDeltaY && N > emptyBlockY + currentDeltaY
+                            && 0 <= emptyBlockX + currentDeltaX && N > emptyBlockX + currentDeltaX) {
+                        int[] blockToMove = new int[]{emptyBlockY + currentDeltaY, emptyBlockX + currentDeltaX};
 //                        int[] newEmptyBlock = new int[]{emptyBlock[0] + currentDeltaY, emptyBlock[1] + currentDeltaX};
 //                        int[] newNeighborBlock = new int[]{emptyBlock[0], emptyBlock[1]};
 //                        System.out.println("move:");
@@ -192,7 +200,7 @@ public class Board {
         s.append(tiles.length + "\n");
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles.length; j++) {
-                s.append(String.format("%2d ", tiles[i][j]));
+                s.append(String.format("%2d ", (int) tiles[i][j]));
             }
             s.append("\n");
         }
