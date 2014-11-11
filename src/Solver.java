@@ -1,25 +1,62 @@
+
+import edu.princeton.cs.algs4.MinPQ;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author dragsa
  */
 public class Solver {
 
+    private MinPQ<Board> minQueueInitial;
+    private int initialSteps;
+    private MinPQ<Board> minQueueTwin;
+    private boolean solvable;
+
     public Solver(Board initial) {
+        MinPQ<Board> minQueueInitial = new MinPQ<Board>();
+        MinPQ<Board> minQueueTwin = new MinPQ<Board>();
+        minQueueInitial.insert(initial);
+        minQueueTwin.insert(initial.twin());
+        while (true) {
+            Board currentMinBoardInitial = minQueueInitial.delMin();
+            if (currentMinBoardInitial.isGoal()) {
+                solvable = true;
+                break;
+            }
+            if (currentMinBoardInitial.neighbors().iterator().hasNext()) {
+                initialSteps++;
+            }
+            for (Board currentNeighbor : currentMinBoardInitial.neighbors()) {
+                if (!currentMinBoardInitial.equals(minQueueInitial.min())) {
+                    minQueueInitial.insert(currentNeighbor);
+                }
+            }
+            
+            Board currentMinBoardTwin = minQueueTwin.delMin();
+            if (currentMinBoardTwin.isGoal()) {
+                break;
+            }
+            for (Board currentNeighbor : currentMinBoardTwin.neighbors()) {
+                if (!currentMinBoardTwin.equals(minQueueInitial.min())) {
+                    minQueueTwin.insert(currentNeighbor);
+                }
+            }
+        }
     }
     // find a solution to the initial board (using the A* algorithm)
 
     public boolean isSolvable() {
-        return false;
+        return solvable;
     }
     // is the initial board solvable?
 
     public int moves() {
-        return 0;
+        if (isSolvable()) return initialSteps;
+        return -1;
     }
     // min number of moves to solve initial board; -1 if unsolvable
 
