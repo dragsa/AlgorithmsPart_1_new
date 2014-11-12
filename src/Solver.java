@@ -11,40 +11,45 @@ import edu.princeton.cs.algs4.MinPQ;
  */
 public class Solver {
 
-    private MinPQ<Board> minQueueInitial;
-    private int initialSteps;
-    private MinPQ<Board> minQueueTwin;
+    private MinPQ<SearchNode> minQueueInitial;
+    private MinPQ<SearchNode> minQueueTwin;
     private boolean solvable;
+    private SearchNode goalNode;
 
     public Solver(Board initial) {
-        MinPQ<Board> minQueueInitial = new MinPQ<Board>();
-        MinPQ<Board> minQueueTwin = new MinPQ<Board>();
-        minQueueInitial.insert(initial);
-        minQueueTwin.insert(initial.twin());
+        minQueueInitial = new MinPQ<SearchNode>();
+        minQueueTwin = new MinPQ<SearchNode>();
+        minQueueInitial.insert(new SearchNode(initial, null, 0));
+        minQueueTwin.insert(new SearchNode(initial.twin(), null, 0));
         while (true) {
-            Board currentMinBoardInitial = minQueueInitial.delMin();
-            if (currentMinBoardInitial.isGoal()) {
+            SearchNode currentMinSearchNode = minQueueInitial.delMin();
+            if (currentMinSearchNode.getBoard().isGoal()) {
                 solvable = true;
+                goalNode = currentMinSearchNode;
                 break;
             }
-            if (currentMinBoardInitial.neighbors().iterator().hasNext()) {
-                initialSteps++;
-            }
-            for (Board currentNeighbor : currentMinBoardInitial.neighbors()) {
-                if (!currentMinBoardInitial.equals(minQueueInitial.min())) {
-                    minQueueInitial.insert(currentNeighbor);
+            for (Board currentNeighbor : currentMinSearchNode.getBoard().neighbors()) {
+                if ((currentMinSearchNode.getPreviousNode() == null)) {
+                    minQueueInitial.insert(new SearchNode(currentNeighbor, null, 0));
+                } else if (!currentNeighbor.equals(currentMinSearchNode.getPreviousNode().getBoard())) {
+                    minQueueInitial.insert(new SearchNode(currentNeighbor, currentMinSearchNode.getPreviousNode(),
+                            currentMinSearchNode.getMoves() + 1));
                 }
             }
-            
-            Board currentMinBoardTwin = minQueueTwin.delMin();
-            if (currentMinBoardTwin.isGoal()) {
+
+            SearchNode currentMinSearchNodeTwin = minQueueTwin.delMin();
+            if (currentMinSearchNodeTwin.getBoard().isGoal()) {
                 break;
             }
-            for (Board currentNeighbor : currentMinBoardTwin.neighbors()) {
-                if (!currentMinBoardTwin.equals(minQueueInitial.min())) {
-                    minQueueTwin.insert(currentNeighbor);
+            for (Board currentNeighborTwin : currentMinSearchNodeTwin.getBoard().neighbors()) {
+                if ((currentMinSearchNodeTwin.getPreviousNode() == null)) {
+                    minQueueTwin.insert(new SearchNode(currentNeighborTwin, null, 0));
+                } else if (!currentNeighborTwin.equals(currentMinSearchNodeTwin.getPreviousNode().getBoard())) {
+                    minQueueTwin.insert(new SearchNode(currentNeighborTwin, currentMinSearchNodeTwin.getPreviousNode(),
+                            currentMinSearchNodeTwin.getMoves() + 1));
                 }
             }
+
         }
     }
     // find a solution to the initial board (using the A* algorithm)
@@ -55,15 +60,61 @@ public class Solver {
     // is the initial board solvable?
 
     public int moves() {
-        if (isSolvable()) return initialSteps;
+        if (isSolvable()) {
+            return goalNode.getMoves();
+        }
         return -1;
     }
     // min number of moves to solve initial board; -1 if unsolvable
 
     public Iterable<Board> solution() {
+        if (isSolvable()) {
+            Queue<Board> solution = new Queue<Board>();
+            while (!(goalNode.getBoard() == null)) {
+                solution.enqueue(goalNode.getBoard());
+                goalNode = new SearchNode(goalNode.getPreviousNode().getBoard(), goalNode.getPreviousNode().getPreviousNode(),
+                        goalNode.getMoves() - 1);
+            }
+        }
         return null;
     }
     // sequence of boards in a shortest solution; null if unsolvable
+
+    private class SearchNode implements Comparable<SearchNode> {
+
+        private int moves;
+        private Board board;
+        private SearchNode previousNode;
+
+        public SearchNode(Board _board, SearchNode _previousNode, int _moves) {
+            this.board = _board;
+            this.previousNode = _previousNode;
+            this.moves = _moves;
+        }
+
+        public int compareTo(SearchNode that) {
+            if (this.getBoard().manhattan() < that.getBoard().manhattan()) {
+                return 1;
+            }
+            if (this.getBoard().manhattan() < that.getBoard().manhattan()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+
+        public int getMoves() {
+            return moves;
+        }
+
+        public Board getBoard() {
+            return board;
+        }
+
+        public SearchNode getPreviousNode() {
+            return previousNode;
+        }
+    }
 
     public static void main(String[] args) {
         // create initial board from file

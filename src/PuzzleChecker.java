@@ -61,8 +61,8 @@ public class PuzzleChecker {
 //            tiles[0][0] = 142;
 //            System.out.println(initial);
             
-//            Solver solver = new Solver(initial);
-//            System.out.println(filename + ": " + solver.moves());
+            Solver solver = new Solver(initial);
+            System.out.println(filename + ": " + solver.moves());
         }
     }
 }
