@@ -28,11 +28,11 @@ public class Solver {
                 goalNode = currentMinSearchNode;
                 break;
             }
-            for (Board currentNeighbor : currentMinSearchNode.getBoard().neighbors()) {
-                if ((currentMinSearchNode.getPreviousNode() == null)) {
-                    minQueueInitial.insert(new SearchNode(currentNeighbor, null, 0));
-                } else if (!currentNeighbor.equals(currentMinSearchNode.getPreviousNode().getBoard())) {
-                    minQueueInitial.insert(new SearchNode(currentNeighbor, currentMinSearchNode.getPreviousNode(),
+            for (Board currentNeighborBoard : currentMinSearchNode.getBoard().neighbors()) {
+                if (currentMinSearchNode.getPreviousNode() == null) {
+                    minQueueInitial.insert(new SearchNode(currentNeighborBoard, currentMinSearchNode, 1));
+                } else if (!currentNeighborBoard.equals(currentMinSearchNode.getPreviousNode().getBoard())) {
+                    minQueueInitial.insert(new SearchNode(currentNeighborBoard, currentMinSearchNode,
                             currentMinSearchNode.getMoves() + 1));
                 }
             }
@@ -41,11 +41,11 @@ public class Solver {
             if (currentMinSearchNodeTwin.getBoard().isGoal()) {
                 break;
             }
-            for (Board currentNeighborTwin : currentMinSearchNodeTwin.getBoard().neighbors()) {
-                if ((currentMinSearchNodeTwin.getPreviousNode() == null)) {
-                    minQueueTwin.insert(new SearchNode(currentNeighborTwin, null, 0));
-                } else if (!currentNeighborTwin.equals(currentMinSearchNodeTwin.getPreviousNode().getBoard())) {
-                    minQueueTwin.insert(new SearchNode(currentNeighborTwin, currentMinSearchNodeTwin.getPreviousNode(),
+            for (Board currentNeighborBoardTwin : currentMinSearchNodeTwin.getBoard().neighbors()) {
+                if (currentMinSearchNodeTwin.getPreviousNode() == null) {
+                    minQueueTwin.insert(new SearchNode(currentNeighborBoardTwin, currentMinSearchNodeTwin, 1));
+                } else if (!currentNeighborBoardTwin.equals(currentMinSearchNodeTwin.getPreviousNode().getBoard())) {
+                    minQueueTwin.insert(new SearchNode(currentNeighborBoardTwin, currentMinSearchNodeTwin,
                             currentMinSearchNodeTwin.getMoves() + 1));
                 }
             }
@@ -93,10 +93,10 @@ public class Solver {
         }
 
         public int compareTo(SearchNode that) {
-            if (this.getBoard().manhattan() < that.getBoard().manhattan()) {
+            if (this.getBoard().hamming() < that.getBoard().hamming()) {
                 return 1;
             }
-            if (this.getBoard().manhattan() < that.getBoard().manhattan()) {
+            if (this.getBoard().hamming() < that.getBoard().hamming()) {
                 return -1;
             } else {
                 return 0;
