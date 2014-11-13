@@ -1,8 +1,10 @@
+package stacks_and_queues;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package stacks_and_queues;
+
 
 import edu.princeton.cs.introcs.StdOut;
 import java.util.Iterator;

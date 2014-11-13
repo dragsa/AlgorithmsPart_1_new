@@ -1,6 +1,4 @@
 
-import edu.princeton.cs.algs4.MinPQ;
-
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -72,8 +70,13 @@ public class Solver {
             Queue<Board> solution = new Queue<Board>();
             while (!(goalNode.getBoard() == null)) {
                 solution.enqueue(goalNode.getBoard());
-                goalNode = new SearchNode(goalNode.getPreviousNode().getBoard(), goalNode.getPreviousNode().getPreviousNode(),
-                        goalNode.getMoves() - 1);
+                // TO DO
+                if (goalNode.getPreviousNode() == null) {
+                    return solution;
+                } else {
+                    goalNode = new SearchNode(goalNode.getPreviousNode().getBoard(), goalNode.getPreviousNode().getPreviousNode(),
+                            goalNode.getMoves() - 1);
+                }
             }
         }
         return null;
@@ -93,7 +96,7 @@ public class Solver {
         }
 
         public int compareTo(SearchNode that) {
-            if (this.getBoard().hamming() < that.getBoard().hamming()) {
+            if (this.getBoard().hamming() > that.getBoard().hamming()) {
                 return 1;
             }
             if (this.getBoard().hamming() < that.getBoard().hamming()) {
