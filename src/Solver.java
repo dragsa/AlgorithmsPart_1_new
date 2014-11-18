@@ -47,7 +47,6 @@ public class Solver {
                             currentMinSearchNodeTwin.getMoves() + 1));
                 }
             }
-
         }
     }
     // find a solution to the initial board (using the A* algorithm)
@@ -68,6 +67,7 @@ public class Solver {
     public Iterable<Board> solution() {
         if (isSolvable()) {
             Queue<Board> solution = new Queue<Board>();
+            SearchNode indexNode = null;
             while (!(goalNode.getBoard() == null)) {
                 solution.enqueue(goalNode.getBoard());
                 // TO DO
