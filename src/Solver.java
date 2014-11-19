@@ -29,9 +29,19 @@ public class Solver {
             for (Board currentNeighborBoard : currentMinSearchNode.getBoard().neighbors()) {
                 if (currentMinSearchNode.getPreviousNode() == null) {
                     minQueueInitial.insert(new SearchNode(currentNeighborBoard, currentMinSearchNode, 1));
+//                    System.out.println("queue content START");
+//                    for (SearchNode node : minQueueInitial) {
+//                        System.out.print(node.getBoard());
+//                    }
+//                    System.out.println("queue content END");
                 } else if (!currentNeighborBoard.equals(currentMinSearchNode.getPreviousNode().getBoard())) {
                     minQueueInitial.insert(new SearchNode(currentNeighborBoard, currentMinSearchNode,
                             currentMinSearchNode.getMoves() + 1));
+//                    System.out.println("queue content START");
+//                    for (SearchNode node : minQueueInitial) {
+//                        System.out.print(node.getBoard());
+//                    }
+//                    System.out.println("queue content END");
                 }
             }
 
@@ -68,14 +78,19 @@ public class Solver {
         if (isSolvable()) {
             Queue<Board> solution = new Queue<Board>();
             SearchNode indexNode = null;
-            while (!(goalNode.getBoard() == null)) {
-                solution.enqueue(goalNode.getBoard());
+            try {
+                indexNode = goalNode.clone();
+            } catch (CloneNotSupportedException cnsex) {
+                cnsex.printStackTrace();
+            }
+            while (!(indexNode.getBoard() == null)) {
+                solution.enqueue(indexNode.getBoard());
                 // TO DO
-                if (goalNode.getPreviousNode() == null) {
+                if (indexNode.getPreviousNode() == null) {
                     return solution;
                 } else {
-                    goalNode = new SearchNode(goalNode.getPreviousNode().getBoard(), goalNode.getPreviousNode().getPreviousNode(),
-                            goalNode.getMoves() - 1);
+                    indexNode = new SearchNode(indexNode.getPreviousNode().getBoard(), indexNode.getPreviousNode().getPreviousNode(),
+                            indexNode.getMoves() - 1);
                 }
             }
         }
@@ -83,7 +98,7 @@ public class Solver {
     }
     // sequence of boards in a shortest solution; null if unsolvable
 
-    private class SearchNode implements Comparable<SearchNode> {
+    private class SearchNode implements Comparable<SearchNode>, Cloneable {
 
         private int moves;
         private Board board;
@@ -116,6 +131,10 @@ public class Solver {
 
         public SearchNode getPreviousNode() {
             return previousNode;
+        }
+
+        public SearchNode clone() throws CloneNotSupportedException {
+            return (SearchNode) super.clone();
         }
     }
 
