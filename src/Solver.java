@@ -76,7 +76,7 @@ public class Solver {
 
     public Iterable<Board> solution() {
         if (isSolvable()) {
-            Queue<Board> solution = new Queue<Board>();
+            Stack<Board> solution = new Stack<Board>();
             SearchNode indexNode = null;
             try {
                 indexNode = goalNode.clone();
@@ -84,7 +84,7 @@ public class Solver {
                 cnsex.printStackTrace();
             }
             while (!(indexNode.getBoard() == null)) {
-                solution.enqueue(indexNode.getBoard());
+                solution.push(indexNode.getBoard());
                 // TO DO
                 if (indexNode.getPreviousNode() == null) {
                     return solution;
@@ -111,10 +111,10 @@ public class Solver {
         }
 
         public int compareTo(SearchNode that) {
-            if (this.getBoard().hamming() > that.getBoard().hamming()) {
+            if (this.moves > that.moves) {
                 return 1;
             }
-            if (this.getBoard().hamming() < that.getBoard().hamming()) {
+            if (this.moves < that.moves) {
                 return -1;
             } else {
                 return 0;
