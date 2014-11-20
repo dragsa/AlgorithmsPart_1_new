@@ -13,8 +13,9 @@ import java.util.List;
  */
 public class Board {
 
-    private char[][] tiles;
+    private char[] tiles;
     private int N;
+    private int emptyBlockIndex;
     private int emptyBlockX;
     private int emptyBlockY;
     private int hammingIndex;
@@ -23,50 +24,45 @@ public class Board {
     private Board twin;
 
     public Board(int[][] blocks) {
-        tiles = new char[blocks.length][blocks.length];
+        tiles = new char[blocks.length * blocks.length];
+        N = blocks.length;
         for (int i = 0; i < blocks.length; i++) {
-//            tiles[i] = Arrays.copyOf(blocks[i], blocks.length);
-            for (int j = 0; j < tiles[i].length; j++) {
-                tiles[i][j] = (char) (blocks[i][j]);
-                if (tiles[i][j] == 0) {
-                    emptyBlockY = i;
-                    emptyBlockX = j;
-                } else {
-                    int chord = tiles[i][j];
-                    if (chord != flatter(i, j)) {
-//                    System.out.println(tiles[i][j]);
-                        hammingIndex++;
-                        int[] properChords = deFlatter(chord);
-                        int iProper = properChords[0];
-                        int jProper = properChords[1];
-                        manhattanIndex += Math.abs(i - iProper) + Math.abs(j - jProper);
-                    }
+            for (int j = 0; j < blocks[i].length; j++) {
+                int flatIndex = flatter(i, j);
+                tiles[flatIndex] = (char) (blocks[i][j]);
+                if (tiles[flatIndex] == 0) {
+                    emptyBlockIndex = flatIndex;
+                    emptyBlockY = deFlatter(emptyBlockIndex)[0];
+                    emptyBlockX = deFlatter(emptyBlockIndex)[1];
+                } else if ((int)tiles[flatIndex] != flatIndex + 1) {
+                    hammingIndex++;
+                    int[] properChords = deFlatter((int) tiles[flatIndex] - 1);
+                    int iProper = properChords[0];
+                    int jProper = properChords[1];
+                    manhattanIndex += Math.abs(i - iProper) + Math.abs(j - jProper);
                 }
             }
         }
-//        tiles = blocks.clone();
-        N = tiles.length;
     }
     // construct a board from an N-by-N array of blocks
     // (where blocks[i][j] = block in row i, column j)
 
     private int flatter(final int i, final int j) {
-        int flatCoordinate = i * tiles.length + (j + 1);
-        return flatCoordinate;
+        return i * N + j;
     }
 
     private int[] deFlatter(final int k) {
         int i = 0;
         int j = 0;
         if (k == 0) {
-            return new int[]{emptyBlockX, emptyBlockY};
+            return new int[]{0, 0};
         }
-        if (k > tiles.length) {
-            j = (k - 1) % tiles.length;
-            i = (k - j) / tiles.length;
-        } else {
+        if (k < N) {
             j = k - 1;
             i = 0;
+        } else {
+            i = k / N;
+            j = k - i * N;
         }
         return new int[]{i, j};
     }
@@ -87,17 +83,16 @@ public class Board {
     // sum of Manhattan distances between blocks and goal
 
     public boolean isGoal() {
-        return ((tiles[N - 1][N - 1] == 0) && manhattanIndex == 0);
+        return ((tiles[N * N - 1] == 0) && manhattanIndex == 0);
     }
     // is this board the goal board?
 
     public Board twin() {
         if (twin == null) {
-            int[][] tilesTwin = new int[tiles.length][tiles.length];
-            for (int i = 0; i < tiles.length; i++) {
-//                tilesTwin[i] = Arrays.copyOf(tiles[i], tiles.length);
-                for (int j = 0; j < tiles[i].length; j++) {
-                    tilesTwin[i][j] = (int) tiles[i][j];
+            int[][] tilesTwin = new int[N][N];
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    tilesTwin[i][j] = (int) tiles[flatter(i, j)];
                 }
             }
             int indexI;
@@ -133,10 +128,8 @@ public class Board {
         if (this.dimension() != that.dimension()) {
             return false;
         }
-        for (int i = 0; i < N; i++) {
-            if (!Arrays.equals(this.tiles[i], that.tiles[i])) {
-                return false;
-            }
+        if (!Arrays.equals(this.tiles, that.tiles)) {
+            return false;
         }
         return true;
     }
@@ -151,11 +144,10 @@ public class Board {
 //            }
             if (blocksToMoveList.size() > 0) {
                 for (int[] member : blocksToMoveList) {
-                    int[][] tilesClone = new int[tiles.length][tiles.length];
-                    for (int i = 0; i < tiles.length; i++) {
-//                        tilesClone[i] = Arrays.copyOf(tiles[i], tiles.length);
-                        for (int j = 0; j < tiles.length; j++) {
-                            tilesClone[i][j] = (int) tiles[i][j];
+                    int[][] tilesClone = new int[N][N];
+                    for (int i = 0; i < tilesClone.length; i++) {
+                        for (int j = 0; j < tilesClone.length; j++) {
+                            tilesClone[i][j] = (int) tiles[flatter(i, j)];
                         }
                     }
                     tilesClone[emptyBlockY][emptyBlockX] = tilesClone[member[0]][member[1]];
@@ -197,10 +189,10 @@ public class Board {
 
     public String toString() {
         StringBuilder s = new StringBuilder();
-        s.append(tiles.length + "\n");
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles.length; j++) {
-                s.append(String.format("%2d ", (int) tiles[i][j]));
+        s.append(N + "\n");
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                s.append(String.format("%2d ", (int) tiles[flatter(i, j)]));
             }
             s.append("\n");
         }
@@ -209,8 +201,9 @@ public class Board {
     // string representation of this board (in the output format specified below)
 
     private void flatterResult() {
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles.length; j++) {
+        System.out.println("flatter result:");
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
                 System.out.printf("%2d ", flatter(i, j));
             }
             System.out.println("");
@@ -218,15 +211,24 @@ public class Board {
     }
 
     private void deFlatterResult() {
-        for (int i = 7; i < tiles.length; i++) {
-            for (int j = 0; j < tiles.length; j++) {
-                System.out.println("chords: " + i + " " + j);
-                System.out.println("proper chords: " + deFlatter(tiles[i][j])[0] + " " + deFlatter(tiles[i][j])[1]);
+        System.out.println("deflatter result:");
+        for (int i = 3; i < 4; i++) {
+            for (int j = 0; j < N; j++) {
+                int flatIndex = flatter(i, j);
+                System.out.println("block: " + (int) tiles[flatIndex]);
+                System.out.println("1D chord: " + flatIndex);
+                System.out.println("2D chord: " + deFlatter(flatIndex)[0] + " "
+                        + deFlatter(flatIndex)[1]);
+                if ((int) tiles[flatIndex] != flatIndex + 1) {
+                    int[] properChords = deFlatter((int) tiles[flatIndex] - 1);
+                    System.out.println("proper chords: " + properChords[0] + " " + properChords[1]);
+                }
             }
         }
     }
 
     public static void main(String[] args) {
+//        System.out.println(9 / 5);
 // for each command-line argument
         for (String filename : args) {
 
@@ -243,14 +245,16 @@ public class Board {
             Board initial = new Board(tiles);
             System.out.println(initial);
 // neighbors test
-//            Iterable<Board> neib = initial.neighbors();
-//            for (Board memberBoard : neib) {
-//                System.out.println(memberBoard);
-//            }
+            Iterable<Board> neib = initial.neighbors();
+            for (Board memberBoard : neib) {
+                System.out.println(memberBoard);
+            }
 
 // flatters and functon indexes test
-//            initial.flatterResult();
-//            initial.deFlatterResult();
+            initial.flatterResult();
+            System.out.println("initial:");
+            System.out.println(initial);
+            initial.deFlatterResult();
 //            System.out.println(initial.hamming());
 //            System.out.println(initial.manhattan());
 
