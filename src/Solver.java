@@ -104,10 +104,10 @@ public class Solver {
         private Board board;
         private SearchNode previousNode;
 
-        public SearchNode(Board _board, SearchNode _previousNode, int _moves) {
-            this.board = _board;
-            this.previousNode = _previousNode;
-            this.moves = _moves;
+        public SearchNode(Board board, SearchNode previousNode, int moves) {
+            this.board = board;
+            this.previousNode = previousNode;
+            this.moves = moves;
         }
 
         public int compareTo(SearchNode that) {
