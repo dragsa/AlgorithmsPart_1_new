@@ -15,6 +15,9 @@ public class Solver {
     private SearchNode goalNode;
 
     public Solver(Board initial) {
+        if (initial == null) {
+            throw new NullPointerException();
+        }
         minQueueInitial = new MinPQ<SearchNode>();
         minQueueTwin = new MinPQ<SearchNode>();
         minQueueInitial.insert(new SearchNode(initial, null, 0));
