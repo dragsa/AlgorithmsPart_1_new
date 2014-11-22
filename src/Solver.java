@@ -24,7 +24,6 @@ public class Solver {
         minQueueTwin.insert(new SearchNode(initial.twin(), null, 0));
         while (true) {
             SearchNode currentMinSearchNode = minQueueInitial.delMin();
-//            System.out.println(currentMinSearchNode.getBoard());
             if (currentMinSearchNode.getBoard().isGoal()) {
                 solvable = true;
                 goalNode = currentMinSearchNode;
@@ -115,10 +114,10 @@ public class Solver {
         }
 
         public int compareTo(SearchNode that) {
-            if (this.moves > that.moves) {
+            if ((this.moves + this.getBoard().manhattan()) > (that.moves + that.getBoard().manhattan())) {
                 return 1;
             }
-            if (this.moves < that.moves) {
+            if ((this.moves + this.getBoard().manhattan()) < (that.moves + that.getBoard().manhattan())) {
                 return -1;
             } else {
                 return 0;

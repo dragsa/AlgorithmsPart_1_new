@@ -1,7 +1,6 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /*
@@ -171,7 +170,7 @@ public class Board {
             while (!tempNeighborsList.isEmpty()) {
                 int minIndex = tempIndexList.iterator().next();
                 for (int index : tempIndexList) {
-                    if (index < minIndex) {
+                    if (index > minIndex) {
                         minIndex = index;
                     }
                 }
