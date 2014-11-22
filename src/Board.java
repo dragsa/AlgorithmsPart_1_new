@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /*
@@ -15,13 +16,12 @@ public class Board {
 
     private char[] tiles;
     private int N;
-    private int emptyBlockIndex;
     private int emptyBlockX;
     private int emptyBlockY;
     private int hammingIndex;
     private int manhattanIndex;
     private Queue<Board> neighborsList;
-    private Board twin;
+    private Board boardEvilTwin;
 
     public Board(int[][] blocks) {
         tiles = new char[blocks.length * blocks.length];
@@ -31,11 +31,10 @@ public class Board {
                 int flatIndex = flatter(i, j);
                 tiles[flatIndex] = (char) (blocks[i][j]);
                 if (tiles[flatIndex] == 0) {
-                    emptyBlockIndex = flatIndex;
-                    int[] emptyBlock2D = deFlatter(emptyBlockIndex);
+                    int[] emptyBlock2D = deFlatter(flatIndex);
                     emptyBlockY = emptyBlock2D[0];
                     emptyBlockX = emptyBlock2D[1];
-                } else if ((int)tiles[flatIndex] != flatIndex + 1) {
+                } else if ((int) tiles[flatIndex] != flatIndex + 1) {
                     hammingIndex++;
                     int[] properChords = deFlatter((int) tiles[flatIndex] - 1);
                     int iProper = properChords[0];
@@ -84,12 +83,12 @@ public class Board {
     // sum of Manhattan distances between blocks and goal
 
     public boolean isGoal() {
-        return ((tiles[N * N - 1] == 0) && manhattanIndex == 0);
+        return ((tiles[N * N - 1] == 0) && hammingIndex == 0);
     }
     // is this board the goal board?
 
     public Board twin() {
-        if (twin == null) {
+        if (boardEvilTwin == null) {
             int[][] tilesTwin = new int[N][N];
             for (int i = 0; i < N; i++) {
                 for (int j = 0; j < N; j++) {
@@ -107,10 +106,10 @@ public class Board {
             int valueAtIndexB = tilesTwin[indexI][indexJ + 1];
             tilesTwin[indexI][indexJ] = valueAtIndexB;
             tilesTwin[indexI][indexJ + 1] = valueAtIndexA;
-            twin = new Board(tilesTwin);
-            return twin;
+            boardEvilTwin = new Board(tilesTwin);
+            return boardEvilTwin;
         } else {
-            return twin;
+            return boardEvilTwin;
         }
     }
     // a board that is obtained by exchanging two adjacent blocks in the same row
@@ -139,23 +138,45 @@ public class Board {
     public Iterable<Board> neighbors() {
         if (neighborsList == null) {
             neighborsList = new Queue<Board>();
+            ArrayList<Board> tempNeighborsList = new ArrayList<Board>(4);
+            ArrayList<Integer> tempIndexList = new ArrayList<Integer>(4);
+//            HashMap<Integer, Board> tempNeighborsList = new HashMap<Integer, Board>();
             List<int[]> blocksToMoveList = neighborsHelper();
 //            for (int[] member : blocksToMoveList) {
 //                System.out.println(Arrays.toString(member));
 //            }
-            if (blocksToMoveList.size() > 0) {
-                for (int[] member : blocksToMoveList) {
-                    int[][] tilesClone = new int[N][N];
-                    for (int i = 0; i < tilesClone.length; i++) {
-                        for (int j = 0; j < tilesClone.length; j++) {
-                            tilesClone[i][j] = (int) tiles[flatter(i, j)];
-                        }
+            for (int[] member : blocksToMoveList) {
+                int[][] tilesEvilTwin = new int[N][N];
+                for (int i = 0; i < tilesEvilTwin.length; i++) {
+                    for (int j = 0; j < tilesEvilTwin.length; j++) {
+                        tilesEvilTwin[i][j] = (int) tiles[flatter(i, j)];
                     }
-                    tilesClone[emptyBlockY][emptyBlockX] = tilesClone[member[0]][member[1]];
-                    tilesClone[member[0]][member[1]] = 0;
-                    Board tempBoard = new Board(tilesClone);
-                    neighborsList.enqueue(tempBoard);
                 }
+                tilesEvilTwin[emptyBlockY][emptyBlockX] = tilesEvilTwin[member[0]][member[1]];
+                tilesEvilTwin[member[0]][member[1]] = 0;
+                Board tempBoard = new Board(tilesEvilTwin);
+                tempNeighborsList.add(tempBoard);
+                tempIndexList.add(tempBoard.hamming());
+//                neighborsList.enqueue(tempBoard);
+            }
+//            while (!tempNeighborsList.isEmpty()) {
+//                int minIndex = tempNeighborsList.keySet().iterator().next();
+//                for (int index : tempNeighborsList.keySet()) {
+//                    if (index < minIndex) {
+//                        minIndex = index;
+//                    }
+//                }
+//                neighborsList.enqueue(tempNeighborsList.remove(minIndex));
+//            }
+            while (!tempNeighborsList.isEmpty()) {
+                int minIndex = tempIndexList.iterator().next();
+                for (int index : tempIndexList) {
+                    if (index < minIndex) {
+                        minIndex = index;
+                    }
+                }
+                neighborsList.enqueue(tempNeighborsList.remove(tempIndexList.indexOf(minIndex)));
+                tempIndexList.remove(tempIndexList.indexOf(minIndex));
             }
             return neighborsList;
         } else {
@@ -198,6 +219,7 @@ public class Board {
             }
             s.append("\n");
         }
+//        s.append("hamming index: " + hammingIndex + "\n");
         return s.toString();
     }
     // string representation of this board (in the output format specified below)
@@ -267,7 +289,7 @@ public class Board {
 
 // immutability test
             tiles[0][0] = 142;
-            System.out.println(initial);      
+            System.out.println(initial);
         }
     }
 }
