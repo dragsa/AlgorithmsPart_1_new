@@ -32,8 +32,9 @@ public class Board {
                 tiles[flatIndex] = (char) (blocks[i][j]);
                 if (tiles[flatIndex] == 0) {
                     emptyBlockIndex = flatIndex;
-                    emptyBlockY = deFlatter(emptyBlockIndex)[0];
-                    emptyBlockX = deFlatter(emptyBlockIndex)[1];
+                    int[] emptyBlock2D = deFlatter(emptyBlockIndex);
+                    emptyBlockY = emptyBlock2D[0];
+                    emptyBlockX = emptyBlock2D[1];
                 } else if ((int)tiles[flatIndex] != flatIndex + 1) {
                     hammingIndex++;
                     int[] properChords = deFlatter((int) tiles[flatIndex] - 1);
@@ -58,7 +59,7 @@ public class Board {
             return new int[]{0, 0};
         }
         if (k < N) {
-            j = k - 1;
+            j = k;
             i = 0;
         } else {
             i = k / N;
@@ -169,15 +170,16 @@ public class Board {
         int[] deltaY = new int[]{-1, 0, 1};
         for (int currentDeltaY : deltaY) {
             for (int currentDeltaX : deltaX) {
+//                System.out.println("deltas: " + currentDeltaY + " " + currentDeltaX);
                 if (Math.abs(currentDeltaX) != Math.abs(currentDeltaY)) {
                     if (0 <= emptyBlockY + currentDeltaY && N > emptyBlockY + currentDeltaY
                             && 0 <= emptyBlockX + currentDeltaX && N > emptyBlockX + currentDeltaX) {
                         int[] blockToMove = new int[]{emptyBlockY + currentDeltaY, emptyBlockX + currentDeltaX};
-//                        int[] newEmptyBlock = new int[]{emptyBlock[0] + currentDeltaY, emptyBlock[1] + currentDeltaX};
-//                        int[] newNeighborBlock = new int[]{emptyBlock[0], emptyBlock[1]};
+//                        int[] newEmptyBlock = new int[]{emptyBlockY + currentDeltaY, emptyBlockX + currentDeltaX};
+//                        int[] newNeighborBlock = new int[]{emptyBlockY, emptyBlockX};
 //                        System.out.println("move:");
 //                        System.out.println("new empty chords: " + newEmptyBlock[0] + " " + newEmptyBlock[1]);
-//                        System.out.println("block to move: " + tiles[newEmptyBlock[0]][newEmptyBlock[1]]);
+//                        System.out.println("block to move: " + tiles[flatter(newEmptyBlock[0], newEmptyBlock[1])]);
 //                        System.out.println("new neighbor chords: " + newNeighborBlock[0] + " " + newNeighborBlock[1]);
                         blocksToMoveList.add(blockToMove);
                     }
@@ -253,6 +255,7 @@ public class Board {
             for (Board memberBoard : neib) {
                 System.out.println(memberBoard);
             }
+            neib = initial.neighbors();
 
 // flatters and functon indexes test
             initial.flatterResult();
@@ -262,9 +265,9 @@ public class Board {
             System.out.println("hamming: " + initial.hamming());
             System.out.println("manhattan: " + initial.manhattan());
 
-//// immutability test
-//            tiles[0][0] = 142;
-//            System.out.println(initial);
+// immutability test
+            tiles[0][0] = 142;
+            System.out.println(initial);      
         }
     }
 }

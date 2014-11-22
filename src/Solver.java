@@ -24,7 +24,7 @@ public class Solver {
         minQueueTwin.insert(new SearchNode(initial.twin(), null, 0));
         while (true) {
             SearchNode currentMinSearchNode = minQueueInitial.delMin();
-            System.out.println(currentMinSearchNode.getBoard());
+//            System.out.println(currentMinSearchNode.getBoard());
             if (currentMinSearchNode.getBoard().isGoal()) {
                 solvable = true;
                 goalNode = currentMinSearchNode;
