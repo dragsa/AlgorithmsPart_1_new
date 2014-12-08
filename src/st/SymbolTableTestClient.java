@@ -15,7 +15,7 @@ public class SymbolTableTestClient {
     public static void main(String[] args) {
         In in = new In(args[0]);
         
-        SymbolTableSequentailSearch<String, Integer> st = new SymbolTableSequentailSearch<String, Integer>();
+        SymbolTableSequentialSearch<String, Integer> st = new SymbolTableSequentialSearch<String, Integer>();
         int value = 0;
         while (!in.isEmpty()) {
             String key = in.readString();
