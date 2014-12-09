@@ -14,7 +14,7 @@ public class SymbolTableSequentialSearch<Key, Value> {
 
     private int size;
     private Node tail;
-    private Node head;
+//    private Node head;
 
     void put(Key key, Value val) {
         if (isEmpty()) {
@@ -40,6 +40,7 @@ public class SymbolTableSequentialSearch<Key, Value> {
                 tail.key = key;
                 tail.value = val;
                 tail.next = oldTail;
+                oldTail.prev = tail;
 //                oldTail = null;
                 size++;
             }
@@ -48,11 +49,49 @@ public class SymbolTableSequentialSearch<Key, Value> {
 //put key-value pair into the table (remove key from table if value is null )
 
     Value get(Key key) {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        Node pointer = tail;
+        Value valToReturn = null;
+        while (pointer != null) {
+            if (pointer.key.equals(key)) {
+                valToReturn = pointer.value;
+            }
+            pointer = pointer.next;
+        }
+        return valToReturn;
     }
 //value paired with key (null  if key is absent)
 
     void delete(Key key) {
+         if (isEmpty()) {
+            return;
+        }
+        Node pointer = tail;
+        while (pointer != null) {
+            if (pointer.key.equals(key)) {
+                if (pointer == tail) {
+                    tail = pointer.next;
+                    tail.prev = null;
+                    pointer = null;
+                    return;
+                }
+                if (pointer.next != null) {
+                    pointer.next.prev = pointer.prev;
+                } else {
+                    pointer.prev.next = null;
+                    pointer = null;
+                    return;
+                }
+                if (pointer.prev != null) {
+                    pointer.prev.next = pointer.next;
+                }
+                pointer = null;
+                return;
+            }
+            pointer = pointer.next;
+        }
     }
 //remove key (and its value) from table
 
@@ -81,5 +120,6 @@ public class SymbolTableSequentialSearch<Key, Value> {
         Key key;
         Value value;
         Node next;
+        Node prev;
     }
 }
