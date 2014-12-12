@@ -25,25 +25,21 @@ public class SymbolTableSequentialSearch<Key, Value> {
 //            head = tail;
         } else {
             Node pointer = tail;
-            boolean found = false;
             while (pointer != null) {
                 if (pointer.key.equals(key)) {
                     pointer.value = val;
-                    found = true;
-                    break;
+                    return;
                 }
                 pointer = pointer.next;
             }
-            if (!found) {
-                Node oldTail = tail;
-                tail = new Node();
-                tail.key = key;
-                tail.value = val;
-                tail.next = oldTail;
-                oldTail.prev = tail;
+            Node oldTail = tail;
+            tail = new Node();
+            tail.key = key;
+            tail.value = val;
+            tail.next = oldTail;
+            oldTail.prev = tail;
 //                oldTail = null;
-                size++;
-            }
+            size++;
         }
     }
 //put key-value pair into the table (remove key from table if value is null )
@@ -53,19 +49,18 @@ public class SymbolTableSequentialSearch<Key, Value> {
             return null;
         }
         Node pointer = tail;
-        Value valToReturn = null;
         while (pointer != null) {
             if (pointer.key.equals(key)) {
-                valToReturn = pointer.value;
+                return pointer.value;
             }
             pointer = pointer.next;
         }
-        return valToReturn;
+        return null;
     }
 //value paired with key (null  if key is absent)
 
     void delete(Key key) {
-         if (isEmpty()) {
+        if (isEmpty()) {
             return;
         }
         Node pointer = tail;
@@ -73,8 +68,11 @@ public class SymbolTableSequentialSearch<Key, Value> {
             if (pointer.key.equals(key)) {
                 if (pointer == tail) {
                     tail = pointer.next;
-                    tail.prev = null;
+                    if (tail != null) {
+                        tail.prev = null;
+                    }
                     pointer = null;
+                    size--;
                     return;
                 }
                 if (pointer.next != null) {
@@ -82,12 +80,14 @@ public class SymbolTableSequentialSearch<Key, Value> {
                 } else {
                     pointer.prev.next = null;
                     pointer = null;
+                    size--;
                     return;
                 }
                 if (pointer.prev != null) {
                     pointer.prev.next = pointer.next;
                 }
                 pointer = null;
+                size--;
                 return;
             }
             pointer = pointer.next;
@@ -96,12 +96,22 @@ public class SymbolTableSequentialSearch<Key, Value> {
 //remove key (and its value) from table
 
     boolean contains(Key key) {
+        if (isEmpty()) {
+            return false;
+        }
+        Node pointer = tail;
+        while (pointer != null) {
+            if (pointer.key.equals(key)) {
+                return true;
+            }
+            pointer = pointer.next;
+        }
         return false;
     }
 //is there a value paired with key?
 
     boolean isEmpty() {
-        return (tail == null);
+        return (size == 0);
     }
 //is the table empty?
 
