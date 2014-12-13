@@ -54,7 +54,7 @@ public class StackLinkedList<Item> implements Iterable<Item> {
         return new StackLinkedListIterator();
     }
     
-    private class StackLinkedListIterator implements Iterator<Item>{
+    private class StackLinkedListIterator implements Iterator {
         
         private Node firstIterator = first;
         
@@ -68,12 +68,11 @@ public class StackLinkedList<Item> implements Iterable<Item> {
             return currentItem;
         }
         
-        public void remove() {
-            
+        public void remove() {          
         }
     }
     
-    private class Node<Item> {
+    private class Node {
 
         Item item;
         Node next;

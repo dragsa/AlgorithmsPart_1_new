@@ -69,24 +69,24 @@ public class StacksQueuesTestClient {
 //        }
 //        StdOut.println("");
 
-//        StackLinkedList<Integer> stackInstanceLL = new StackLinkedList<Integer>();
-//        while (!in.isEmpty()) {
-//            Integer s = in.readInt();
-//            if (s.equals(0)) {
-//                StdOut.println("items in stack: " + stackInstanceLL.size());
-//                StdOut.println("poping " + stackInstanceLL.pop());
-//            } else {
-//                StdOut.println("items in stack: " + stackInstanceLL.size());
-//                StdOut.println("pushing " + s);
-//                stackInstanceLL.push(s);
-//            }
-//            StdOut.println("");
-//        }
-//        for (Integer currentElement : stackInstanceLL) {
-//            StdOut.print(currentElement + " ");
-//        }
-//        StdOut.println("");
-
+        StackLinkedList<Integer> stackInstanceLL = new StackLinkedList<Integer>();
+        while (!in.isEmpty()) {
+            Integer s = in.readInt();
+            if (s.equals(0)) {
+                StdOut.println("items in stack: " + stackInstanceLL.size());
+                StdOut.println("poping " + stackInstanceLL.pop());
+            } else {
+                StdOut.println("items in stack: " + stackInstanceLL.size());
+                StdOut.println("pushing " + s);
+                stackInstanceLL.push(s);
+            }
+            StdOut.println("");
+        }
+        for (Integer currentElement : stackInstanceLL) {
+            StdOut.print(currentElement + " ");
+        }
+        StdOut.println("");
+    }
 //        QueueOfStringsLinkedList queueOfStringsLL = new QueueOfStringsLinkedList();
 //        while (!in.isEmpty()) {
 //            String s = in.readString();
@@ -103,36 +103,35 @@ public class StacksQueuesTestClient {
 //            StdOut.println("");
 //        }
 //        StdOut.println("");
-
-        QueueLinkedList<String> queueLL = new QueueLinkedList<String>();
-//        QueueLinkedList<Integer> queueLL = new QueueLinkedList()<Integer>();
-        while (!in.isEmpty()) {
-            String s = in.readString();
-            if (s.equals("-")) {
-//            Integer s = in.readInt();
-//            if (s.equals(0)) {
-                queueLL.dequeue();
-                for (String currentElement : queueLL) {
-                    StdOut.print(currentElement + " ");
-                }
-                StdOut.println("");
-            } else {
-                queueLL.enqueue(s);
-                for (String currentElement : queueLL) {
-                    StdOut.print(currentElement + " ");
-                }
-                StdOut.println("");
-            }
-            StdOut.println("");
-        }
-        for (String currentElement : queueLL) {
-            StdOut.println(currentElement + " ");
-            for (String innerElement : queueLL) {
-                StdOut.print(innerElement + " ");
-            }
-            StdOut.println("");
-        }
-    }
+//        QueueLinkedList<String> queueLL = new QueueLinkedList<String>();
+////        QueueLinkedList<Integer> queueLL = new QueueLinkedList()<Integer>();
+//        while (!in.isEmpty()) {
+//            String s = in.readString();
+//            if (s.equals("-")) {
+////            Integer s = in.readInt();
+////            if (s.equals(0)) {
+//                queueLL.dequeue();
+//                for (String currentElement : queueLL) {
+//                    StdOut.print(currentElement + " ");
+//                }
+//                StdOut.println("");
+//            } else {
+//                queueLL.enqueue(s);
+//                for (String currentElement : queueLL) {
+//                    StdOut.print(currentElement + " ");
+//                }
+//                StdOut.println("");
+//            }
+//            StdOut.println("");
+//        }
+//        for (String currentElement : queueLL) {
+//            StdOut.println(currentElement + " ");
+//            for (String innerElement : queueLL) {
+//                StdOut.print(innerElement + " ");
+//            }
+//            StdOut.println("");
+//        }
+//    }
 //        QueueOfStringsResizingArray queueOfStringsRA = new QueueOfStringsResizingArray();
 //        while (!in.isEmpty()) {
 //            String s = in.readString();

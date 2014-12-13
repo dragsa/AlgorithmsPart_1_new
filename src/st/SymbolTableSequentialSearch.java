@@ -4,7 +4,9 @@
  */
 package st;
 
+import java.util.Iterator;
 import stacks_and_queues.QueueOfStringsLinkedList;
+import stacks_and_queues.StackLinkedList;
 
 /**
  *
@@ -121,15 +123,41 @@ public class SymbolTableSequentialSearch<Key, Value> {
 //number of key-value pairs in the table
 
     Iterable<Key> keys() {
-        return null;
+        return new STLinkedListIterator();
     }
 //all the keys in the table
-
+  
+//    public Iterator<Key> iterator() {
+//        return new STLinkedListIterator();
+//    }
+    
     private class Node {
 
         Key key;
         Value value;
         Node next;
         Node prev;
+    }
+    
+    private class STLinkedListIterator implements Iterator, Iterable {
+        
+        private Node tailIterator = tail;
+        
+        public boolean hasNext() {
+            return tailIterator != null;
+        }
+        
+        public Key next() {
+            Key currentKey = (Key) tailIterator.key;
+            tailIterator = tailIterator.next;
+            return currentKey;
+        }
+        
+        public void remove() {          
+        }
+        
+         public Iterator<Key> iterator() {
+        return this;
+    }
     }
 }
