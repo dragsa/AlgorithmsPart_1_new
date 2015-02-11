@@ -54,7 +54,7 @@ public class StackLinkedList<Item> implements Iterable<Item> {
         return new StackLinkedListIterator();
     }
     
-    private class StackLinkedListIterator implements Iterator {
+    private class StackLinkedListIterator implements Iterator<Item> {
         
         private Node firstIterator = first;
         

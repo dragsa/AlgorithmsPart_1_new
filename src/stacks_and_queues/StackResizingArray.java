@@ -13,7 +13,8 @@ import java.util.Iterator;
  * @author dragsa
  */
 public class StackResizingArray<Item> implements Iterable<Item> {
-    private Item[] array;
+    
+	private Item[] array;
     private int pointer;
 
     public StackResizingArray() {

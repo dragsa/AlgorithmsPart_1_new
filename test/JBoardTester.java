@@ -1,6 +1,5 @@
 
 import java.io.File;
-import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;

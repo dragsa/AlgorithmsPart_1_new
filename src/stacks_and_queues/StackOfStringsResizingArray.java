@@ -27,7 +27,7 @@ public class StackOfStringsResizingArray {
         }
         array[pointer++] = item;
     }
-//insert a new string onto stack
+    //insert a new string onto stack
 
     public String pop() {
         if (size() == 0) {
@@ -56,7 +56,7 @@ public class StackOfStringsResizingArray {
     public boolean isEmpty() {
         return pointer == 0;
     }
-//is the stack empty?
+//is the stack empty?Ы
 
     public int size() {
         return pointer;
